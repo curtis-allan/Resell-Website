@@ -4,7 +4,7 @@
   "description": "Resell designer products",
   "main": "index.js",
   "scripts": {
-    "start": "next start",
+    "start": "NODE_ENV=production nodemon server.js",
     "dev": "next",
     "build": "next build"
   },

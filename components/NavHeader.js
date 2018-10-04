@@ -13,13 +13,6 @@ export default class NavHeader extends Component {
     this.setState({ activeItem: name });
   };
 
-  handleLogin = () => {
-    axios.post("http://localhost:5000/api/login").then(res => {
-      const token = res.data;
-      this.setState({ token });
-    });
-  };
-
   render() {
     const { activeItem } = this.state;
     return (
@@ -37,14 +30,10 @@ export default class NavHeader extends Component {
           </Link>
           <Menu.Item as="a">Company</Menu.Item>
           <Menu.Item as="a">Careers</Menu.Item>
-          <Menu.Item as="a">
-            Token:
-            {this.state.token && this.state.token.token}
-          </Menu.Item>
           <Menu.Item position="right">
-            <Button as="a" onClick={this.handleLogin}>
-              Log in
-            </Button>
+            <Link href="/login">
+              <Button as="a">Log in</Button>
+            </Link>
             <Button as="a" inverted primary style={{ marginLeft: "0.5em" }}>
               Sign Up
             </Button>

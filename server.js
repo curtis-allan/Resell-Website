@@ -3,45 +3,18 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const { createServer } = require('http')
+const { parse } = require('url')
 const PORT = process.env.PORT || 5000;
-// const bodyParser = require("body-parser");
 
 const dev = process.env.NODE_ENV !== "production";
-const server = next({ dev });
-const Schema = mongoose.Schema;
+const app = next({ dev });
+const handle = server.getRequestHandler();
+//const Schema = mongoose.Schema;
 
-const db = mongoose.connection;
+///const db = mongoose.connection;
 
-server.prepare().then(() => {
-  const app = express();
-
-  app.use(cors());
-
-  mongoose.connect(
-    "mongodb://Curtis:Twinwaters9@ds121673.mlab.com:21673/resell-website",
-    { useNewUrlParser: true }
-  );
-
-  db.on("error", console.error.bind(console, "connection error:"));
-  db.once("open", () => {
-    const userSchema = new Schema({
-      name: String
-    });
-
-    const User = mongoose.model("User", userSchema);
-
-    manlyMan = new User({ name: "kingKong" });
-
-    manlyMan.save((err, User) => {
-      if (err) return console.err(err);
-    });
-  });
-
-  app.get("/api", (req, res) => {
-    res.json({
-      message: "Hello API"
-    });
-  });
+app.prepare().then(() => {
 
   app.post("/api/posts", verifyToken, (req, res) => {
     jwt.verify(req.token, "secretkey", (err, authData) => {
@@ -56,18 +29,30 @@ server.prepare().then(() => {
     });
   });
 
-  app.post("/api/login", (req, res) => {
-    const user = {
-      id: 1,
-      username: "brad",
-      email: "brad@gmail.com"
-    };
+  app.get('/api/user', verifyToken, (req, res, next) => {
+    jwt.verify(req.token, "secretkey", (err, authData) => {
+      if (err) {
+        res.sendStatus(403);
+      } else {
+        res.sendStatus(200)
+        res.redirect('/index.js')
+      }
+  })
 
-    jwt.sign({ user }, "secretkey", (err, token) => {
+  app.post("/api/login", (req, res) => {
+    // 1- map submitted user data to an object
+    // 2- connect to the mongoDB database of users
+    // 3- check if the user is already in the data
+    // 4- if no user found, no user found msg
+    // 5- if user found,
+    const user = req.body;
+
+    jwt.sign({ user }, "secretkey", { expiresIn: "30s" }, (err, token) => {
       const finalToken = res.json({
         token
       });
-      res.send(finalToken);
+      res.sendStatus(200);
+      res.redirect('/users');
     });
   });
 
@@ -90,7 +75,8 @@ server.prepare().then(() => {
     }
   }
 
-  app.listen(PORT, () => {
+  app.listen(PORT, err => {
+    if (err) console.error(err);
     console.log(`> Ready on port: ${PORT}`);
   });
 });
