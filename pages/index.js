@@ -1,8 +1,14 @@
 import Layout from "../components/Layout";
+import React from "react";
+import { Segment, Container } from "semantic-ui-react";
 
 const Index = () => (
   <Layout>
-    <h1>Hello, this is the main application.</h1>
+    <Segment vertical>
+      <Container>
+        <h1>Hello</h1>
+      </Container>
+    </Segment>
   </Layout>
 );
 export default Index;

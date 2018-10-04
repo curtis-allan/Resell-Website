@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import ShopItem from "./ShopItem";
-import { Container, Button, Checkbox, Form } from "semantic-ui-react";
+import { Container, Button, Form } from "semantic-ui-react";
 
 class ShopContainer extends Component {
   state = {

@@ -1,14 +1,41 @@
 const next = require("next");
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
+const cors = require("cors");
 const PORT = process.env.PORT || 5000;
 // const bodyParser = require("body-parser");
 
 const dev = process.env.NODE_ENV !== "production";
 const server = next({ dev });
+const Schema = mongoose.Schema;
+
+const db = mongoose.connection;
 
 server.prepare().then(() => {
   const app = express();
+
+  app.use(cors());
+
+  mongoose.connect(
+    "mongodb://Curtis:Twinwaters9@ds121673.mlab.com:21673/resell-website",
+    { useNewUrlParser: true }
+  );
+
+  db.on("error", console.error.bind(console, "connection error:"));
+  db.once("open", () => {
+    const userSchema = new Schema({
+      name: String
+    });
+
+    const User = mongoose.model("User", userSchema);
+
+    manlyMan = new User({ name: "kingKong" });
+
+    manlyMan.save((err, User) => {
+      if (err) return console.err(err);
+    });
+  });
 
   app.get("/api", (req, res) => {
     res.json({
@@ -36,10 +63,11 @@ server.prepare().then(() => {
       email: "brad@gmail.com"
     };
 
-    jwt.sign({ user }, "secretkey", { expiresIn: "30s" }, (err, token) => {
-      res.json({
+    jwt.sign({ user }, "secretkey", (err, token) => {
+      const finalToken = res.json({
         token
       });
+      res.send(finalToken);
     });
   });
 
