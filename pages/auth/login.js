@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import {
   Button,
   Form,
@@ -8,15 +8,23 @@ import {
   Segment
 } from "semantic-ui-react";
 import Head from "next/head";
-import axios from "axios";
 
-class LoginForm extends React.Component {
-  state = {
-    user: {
-      email: "",
-      password: ""
+class LoginForm extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: {
+        name: "",
+        password: ""
+      }
+    };
+  }
+
+  componentDidMount() {
+    if (auth.loggedIn()) {
+      this.props.url.replaceTo("/admin");
     }
-  };
+  }
 
   handleChange = e => {
     const user = { ...this.state.user };
@@ -26,11 +34,14 @@ class LoginForm extends React.Component {
   };
 
   handleSubmit = e => {
-    const { user } = this.state;
-    axios.post("http://localhost:5000/api/login", { user }).then(res => {
-      console.log(res);
-      console.log(res.data);
-    });
+    e.preventDefault();
+    auth
+      .login(this.state.user.email, this.state.user.password)
+      .then(res => {
+        console.log(res);
+        this.props.url.replaceTo("/admin");
+      })
+      .catch(e => console.log(e));
   };
 
   render() {

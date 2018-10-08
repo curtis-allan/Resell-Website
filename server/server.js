@@ -2,19 +2,28 @@ const next = require("next");
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
-const cors = require("cors");
-const { createServer } = require('http')
-const { parse } = require('url')
 const PORT = process.env.PORT || 5000;
+const bodyParser = require("body-parser");
 
 const dev = process.env.NODE_ENV !== "production";
-const app = next({ dev });
+const server = next({ dev });
 const handle = server.getRequestHandler();
-//const Schema = mongoose.Schema;
 
-///const db = mongoose.connection;
+server.prepare().then(() => {
+  const app = express();
 
-app.prepare().then(() => {
+  app.use(bodyParser());
+
+  require("./routes")(app);
+
+  mongoose.connect(
+    "mongodb://Curtis:Twinwaters9@ds121673.mlab.com:21673/resell-website",
+    { useNewUrlParser: true }
+  );
+
+  app.get("*", (req, res) => {
+    return handle(req, res);
+  });
 
   app.post("/api/posts", verifyToken, (req, res) => {
     jwt.verify(req.token, "secretkey", (err, authData) => {
@@ -29,17 +38,18 @@ app.prepare().then(() => {
     });
   });
 
-  app.get('/api/user', verifyToken, (req, res, next) => {
+  app.get("/me", verifyToken, (req, res, next) => {
     jwt.verify(req.token, "secretkey", (err, authData) => {
       if (err) {
         res.sendStatus(403);
       } else {
-        res.sendStatus(200)
-        res.redirect('/index.js')
+        res.sendStatus(200);
+        //app.render(req, res, "/index");
       }
-  })
+    });
+  });
 
-  app.post("/api/login", (req, res) => {
+  app.post("/token", (req, res) => {
     // 1- map submitted user data to an object
     // 2- connect to the mongoDB database of users
     // 3- check if the user is already in the data
@@ -52,7 +62,7 @@ app.prepare().then(() => {
         token
       });
       res.sendStatus(200);
-      res.redirect('/users');
+      res.send(finaltoken);
     });
   });
 

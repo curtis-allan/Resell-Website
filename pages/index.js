@@ -6,7 +6,7 @@ const Index = () => (
   <Layout>
     <Segment vertical>
       <Container>
-        <h1>Hello</h1>
+        <h1>HelloNIGNOG</h1>
       </Container>
     </Segment>
   </Layout>

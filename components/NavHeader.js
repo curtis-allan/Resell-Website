@@ -1,12 +1,10 @@
 import Link from "next/link";
-import { Menu, Button, Segment, Container } from "semantic-ui-react";
+import { Menu, Button, Container } from "semantic-ui-react";
 import React, { Component } from "react";
-import axios from "axios";
 
 export default class NavHeader extends Component {
   state = {
-    activeItem: "",
-    token: ""
+    activeItem: ""
   };
 
   handleItemClick = (e, { name }) => {
@@ -31,12 +29,14 @@ export default class NavHeader extends Component {
           <Menu.Item as="a">Company</Menu.Item>
           <Menu.Item as="a">Careers</Menu.Item>
           <Menu.Item position="right">
-            <Link href="/login">
+            <Link href="/auth/login">
               <Button as="a">Log in</Button>
             </Link>
-            <Button as="a" inverted primary style={{ marginLeft: "0.5em" }}>
-              Sign Up
-            </Button>
+            <Link href="/auth/register">
+              <Button as="a" inverted primary style={{ marginLeft: "0.5em" }}>
+                Sign Up
+              </Button>
+            </Link>
           </Menu.Item>
         </Container>
       </Menu>
