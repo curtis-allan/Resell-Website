@@ -1,15 +1,17 @@
 import Layout from "../components/Layout";
-import React from "react";
+import React, { Component } from "react";
 import ShopContainer from "../components/shop/ShopContainer";
-import Head from "next/head";
 import { Segment } from "semantic-ui-react";
+import Router from "next/router";
 
-const shop = () => (
-  <Layout>
-    <Segment vertical>
-      <ShopContainer />
-    </Segment>
-  </Layout>
-);
-
-export default shop;
+export default class Shop extends Component {
+  render() {
+    return (
+      <Layout>
+        <Segment vertical>
+          <ShopContainer />
+        </Segment>
+      </Layout>
+    );
+  }
+}

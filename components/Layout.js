@@ -9,6 +9,7 @@ import {
 } from "semantic-ui-react";
 import NavHeader from "./NavHeader";
 import Head from "next/head";
+import { setInStorage, getFromStorage } from "../utils/storage";
 
 const Layout = ({ children }) => (
   <Segment vertical style={{ minHeight: 700, padding: "1em 0em" }} vertical>

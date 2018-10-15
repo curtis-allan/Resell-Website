@@ -10,7 +10,7 @@ import {
 import Head from "next/head";
 import axios from "axios";
 
-class LoginForm extends Component {
+export default class register extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -43,17 +43,17 @@ class LoginForm extends Component {
     };
 
     axios.post("/api/account/signup", user).then(res => {
-      console.log("json", res);
-      if (res.success) {
+      console.log("result", res);
+      if (res.data.success) {
         this.setState({
-          signUpError: res.message,
+          signUpError: res.data.message,
           isLoading: false,
           signUpEmail: "",
           signUpPassword: ""
         });
       } else {
         this.setState({
-          signUpError: res.message,
+          signUpError: res.data.message,
           isLoading: false
         });
       }
@@ -80,7 +80,6 @@ class LoginForm extends Component {
     if (!token) {
       return (
         <div className="login-form">
-          <div>{signUpError ? <p>{signUpError}</p> : null}</div>
           <Head>
             <link
               rel="stylesheet"
@@ -129,13 +128,11 @@ class LoginForm extends Component {
                   />
 
                   <Button color="teal" fluid size="large">
-                    Login
+                    Sign Up
                   </Button>
                 </Segment>
               </Form>
-              <Message>
-                New to us? <a href="#">Sign Up</a>
-              </Message>
+              <Message>{signUpError ? <p>{signUpError}</p> : null}</Message>
             </Grid.Column>
           </Grid>
         </div>
@@ -148,5 +145,3 @@ class LoginForm extends Component {
     );
   }
 }
-
-export default LoginForm;

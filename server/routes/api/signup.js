@@ -6,19 +6,6 @@ module.exports = app => {
     let { email } = body;
     const { password } = body;
 
-    if (!email) {
-      return res.send({
-        success: false,
-        message: "Error: Email cannot be blank."
-      });
-    }
-    if (!password) {
-      return res.send({
-        success: false,
-        message: "Error: Password cannot be blank."
-      });
-    }
-
     email = email.toLowerCase();
     email = email.trim();
 
