@@ -3,36 +3,32 @@ import { Header, Menu, Icon } from "semantic-ui-react";
 import React, { Component } from "react";
 
 export default class NavHeader extends Component {
-  state = {
-    activeItem: ""
-  };
+  state = { activeItem: "" };
 
-  handleItemClick = (e, { name }) => {
-    this.setState({ activeItem: name });
+  handleItemClick = e => {
+    this.setState({ activeItem: [e.target.name] });
   };
 
   render() {
     const { activeItem } = this.state;
     return (
       <Menu>
-        <Header as="h1" attached>
-          Resell App
-        </Header>
+        <Header as="h1">Resell App</Header>
         <Menu.Menu position="right">
           <Link href="/" passHref>
             <Menu.Item
-              name="Home"
-              active={activeItem === "Home"}
+              name="home"
+              active={activeItem === "home"}
               onClick={this.handleItemClick}
-              as="a"
+              // as="a"
             >
               Home
             </Menu.Item>
           </Link>
           <Link href="/shop" passHref>
             <Menu.Item
-              name="Shop"
-              active={activeItem === "Shop"}
+              name="shop"
+              active={activeItem === "shop"}
               onClick={this.handleItemClick}
               as="a"
             >
@@ -41,18 +37,18 @@ export default class NavHeader extends Component {
           </Link>
           <Link href="/about" passHref>
             <Menu.Item
-              name="About"
-              active={activeItem === "About"}
+              name="about"
+              active={activeItem === "about"}
               onClick={this.handleItemClick}
               as="a"
             >
-              About
+              {activeItem}
             </Menu.Item>
           </Link>
-          <Link href="/about" passHref>
+          <Link href="/cart" passHref>
             <Menu.Item
-              name="Cart"
-              active={activeItem === "Cart"}
+              name="cart"
+              active={activeItem === "cart"}
               onClick={this.handleItemClick}
               as="a"
             >

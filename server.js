@@ -1,66 +1,42 @@
 const next = require("next");
 const express = require("express");
-const jwt = require("jsonwebtoken");
 const PORT = process.env.PORT || 5000;
-// const bodyParser = require("body-parser");
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const api = require("./lib/api");
+const MONGO_URI =
+  "mongodb://Curtis:Twinwaters9@ds121673.mlab.com:21673/resell-website";
 
 const dev = process.env.NODE_ENV !== "production";
 const server = next({ dev });
+const handle = server.getRequestHandler();
 
 server.prepare().then(() => {
   const app = express();
 
-  app.get("/api", (req, res) => {
-    res.json({
-      message: "Hello API"
-    });
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
+
+  mongoose.connect(
+    MONGO_URI,
+    { useNewUrlParser: true }
+  );
+  const db = mongoose.connection;
+  db.on("error", console.error.bind(console, "connection error:"));
+  db.on("open", function() {
+    console.log("Connected to MongoDB");
   });
 
-  app.post("/api/posts", verifyToken, (req, res) => {
-    jwt.verify(req.token, "secretkey", (err, authData) => {
-      if (err) {
-        res.sendStatus(403);
-      } else {
-        res.json({
-          message: "Post created...",
-          authData
-        });
-      }
-    });
+  app.use((req, res, next) => {
+    req.db = db;
+    next();
   });
 
-  app.post("/api/login", (req, res) => {
-    const user = {
-      id: 1,
-      username: "brad",
-      email: "brad@gmail.com"
-    };
+  app.use("/api", api);
 
-    jwt.sign({ user }, "secretkey", { expiresIn: "30s" }, (err, token) => {
-      res.json({
-        token
-      });
-    });
+  app.get("*", (req, res) => {
+    return handle(req, res);
   });
-
-  // FORMAT OF TOKEN
-  //Authorization: Bearer <access_token>
-
-  // Verify Token
-  function verifyToken(req, res, next) {
-    // Get auth header value
-    const bearerHeader = req.headers["authorization"];
-    // Check if bearer is undefined
-    if (typeof bearerHeader !== "undefined") {
-      const bearer = bearerHeader.split(" ");
-      const bearerToken = bearer[1];
-      req.token = bearerToken;
-      next();
-    } else {
-      // Forbidden
-      res.sendStatus(403);
-    }
-  }
 
   app.listen(PORT, () => {
     console.log(`> Ready on port: ${PORT}`);

@@ -1,8 +1,8 @@
 import React from "react";
-import NavHeader from "./Header";
+import NavHeader from "./NavHeader";
 import Head from "next/head";
 
-const Layout = props => (
+const Layout = ({ children }) => (
   <div>
     <Head>
       <title>Resell App</title>
@@ -12,7 +12,7 @@ const Layout = props => (
       />
     </Head>
     <NavHeader />
-    {props.children}
+    {children}
     <style jsx>
       {`
         div {
