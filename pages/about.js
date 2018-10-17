@@ -4,20 +4,18 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import "isomorphic-unfetch";
 
-class Index extends Component {
+export default class extends Component {
   static async getInitialProps() {
-    const res = await fetch("http://localhost:5000/api/shop");
+    const res = await fetch("http://localhost:5000/api/stars");
     const json = await res.json();
-    return { ShopItems: json.ShopItems };
+    return { stars: json.stars };
   }
   render() {
     return (
       <Layout>
-        <Header as="h1">Hello, this is the main application.</Header>
-        <p>There are {this.props.ShopItems} stars</p>
+        <Header as="h1">Hello, this is the about page.</Header>
+        <p>There are {this.props.stars} stars</p>
       </Layout>
     );
   }
 }
-
-export default Index;

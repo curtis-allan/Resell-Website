@@ -1,6 +1,7 @@
 import React from "react";
 import NavHeader from "./NavHeader";
 import Head from "next/head";
+import { Container } from "semantic-ui-react";
 
 const Layout = ({ children }) => (
   <div>
@@ -12,14 +13,7 @@ const Layout = ({ children }) => (
       />
     </Head>
     <NavHeader />
-    {children}
-    <style jsx>
-      {`
-        div {
-          background-color: whitesmoke;
-        }
-      `}
-    </style>
+    <Container text>{children}</Container>
   </div>
 );
 
