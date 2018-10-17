@@ -29,10 +29,10 @@ export default class NavHeader extends Component {
           <Menu.Item as="a">Company</Menu.Item>
           <Menu.Item as="a">Careers</Menu.Item>
           <Menu.Item position="right">
-            <Link href="/auth/login">
+            <Link href="/login">
               <Button as="a">Log in</Button>
             </Link>
-            <Link href="/auth/register">
+            <Link href="/register">
               <Button as="a" inverted primary style={{ marginLeft: "0.5em" }}>
                 Sign Up
               </Button>

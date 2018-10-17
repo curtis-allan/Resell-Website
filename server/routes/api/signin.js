@@ -33,7 +33,7 @@ module.exports = app => {
         const user = users[0];
 
         if (!user.validPassword(password)) {
-          res.send({
+          return res.send({
             success: false,
             message: "Error: Invalid Email/Password"
           });
@@ -96,10 +96,11 @@ module.exports = app => {
     const { query } = req;
     const { token } = query;
 
-    UserSession.find({
-      _id: token,
-      isDeleted: false
-    }),
+    UserSession.find(
+      {
+        _id: token,
+        isDeleted: false
+      },
       (err, sessions) => {
         if (err) {
           console.log(err);
@@ -108,19 +109,18 @@ module.exports = app => {
             message: "Error: Server error"
           });
         }
-
         if (sessions.length != 1) {
           return res.send({
             success: false,
             message: "Error: Invalid"
           });
         } else {
-          // DO ACTION HERE
           return res.send({
             success: true,
             message: "Good"
           });
         }
-      };
+      }
+    );
   });
 };
