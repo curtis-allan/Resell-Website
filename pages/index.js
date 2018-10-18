@@ -1,21 +1,30 @@
-import Layout from "../components/Layout";
-import { Header } from "semantic-ui-react";
+import { Header, Loader, Dimmer } from "semantic-ui-react";
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import "isomorphic-unfetch";
+import ShopContainer from "../components/shop/ShopContainer";
+//import { connect } from "react-redux";
+import axios from "axios";
 
 class Index extends Component {
-  static async getInitialProps() {
-    const res = await fetch("http://localhost:5000/api/shop");
-    const json = await res.json();
-    return { ShopItems: json.ShopItems };
+  constructor(props) {
+    super(props);
+    this.state = { isLoading: true };
   }
+
+  static async getInitialProps() {
+    const response = await axios.get("http://localhost:5000/api/shop");
+    if (response && response.data) {
+      return { items: response.data.items };
+    } else {
+      return {};
+    }
+  }
+
   render() {
     return (
-      <Layout>
+      <>
         <Header as="h1">Hello, this is the main application.</Header>
-        <p>There are {this.props.ShopItems} stars</p>
-      </Layout>
+        <ShopContainer items={this.props.items} />
+      </>
     );
   }
 }
