@@ -1,20 +1,18 @@
-import { Header, Loader, Dimmer } from "semantic-ui-react";
+import { Header } from "semantic-ui-react";
 import React, { Component } from "react";
 import ShopContainer from "../components/shop/ShopContainer";
 //import { connect } from "react-redux";
 import axios from "axios";
 
 class Index extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { isLoading: true };
-  }
-
   static async getInitialProps() {
-    const response = await axios.get("http://localhost:5000/api/shop");
-    if (response && response.data) {
-      return { items: response.data.items };
+    let pageProps = {};
+    const res = await axios.get("http://localhost:5000/api/shop");
+    if (res && res.data) {
+      pageProps.items = res.data.items;
+      return { pageProps };
     } else {
+      console.log("NO RESPONSE FROM API");
       return {};
     }
   }

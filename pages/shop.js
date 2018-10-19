@@ -4,18 +4,19 @@ import axios from "axios";
 
 export default class Shop extends Component {
   static async getInitialProps() {
-    await new Promise(resolve => {
-      setTimeout(resolve, 500);
-    });
-    const response = await axios.get("http://localhost:5000/api/shop");
-    if (response && response.data) {
-      return { items: response.data.items };
-    } else {
-      return {};
+    let pageProps = {};
+    const res = await axios.get("http://localhost:5000/api/shop");
+    if (res && res.data) {
+      pageProps.items = res.data.items;
+      return { pageProps };
     }
   }
 
   render() {
-    return <ShopContainer items={this.props.items} form />;
+    return (
+      <>
+        <ShopContainer items={this.props.items} form />
+      </>
+    );
   }
 }

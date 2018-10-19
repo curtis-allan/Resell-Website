@@ -4,6 +4,12 @@ const PORT = process.env.PORT || 5000;
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const api = require("./lib/api");
+const session = require("express-session");
+const passport = require("passport");
+const flash = require("connect-flash");
+const cookieParser = require("cookie-parser");
+//const csurf = require("csurf");
+
 const MONGO_URI =
   "mongodb://Curtis:Twinwaters9@ds121673.mlab.com:21673/resell-website";
 
@@ -14,9 +20,22 @@ const handle = server.getRequestHandler();
 server.prepare().then(() => {
   const app = express();
 
+  // Initializing middleware -->
   app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.urlencoded({ extended: false }));
+  // app.use(cookieParser());
+  app.use(
+    session({ secret: "doggos", resave: false, saveUninitialized: false })
+  );
+  app.use(flash());
+  //app.use(csurf());
+  app.use(passport.initialize());
+  app.use(passport.session());
 
+  // Import config files -->
+  require("./config/passport")(passport);
+
+  // Connecting to the database -->
   mongoose.connect(
     MONGO_URI,
     { useNewUrlParser: true }
@@ -27,6 +46,7 @@ server.prepare().then(() => {
     console.log("Connected to MongoDB");
   });
 
+  // Serving nextjs routes/ external api
   app.use((req, res, next) => {
     req.db = db;
     next();
@@ -38,6 +58,26 @@ server.prepare().then(() => {
     return handle(req, res);
   });
 
+  // Serving authentication endpoints
+  app.post(
+    "/login",
+    passport.authenticate("local-login", {
+      successRedirect: "/",
+      failureRedirect: "/login",
+      failureFlash: true
+    })
+  );
+
+  app.post(
+    "/register",
+    passport.authenticate("local-signup", {
+      successRedirect: "/",
+      failureRedirect: "/signup",
+      failureFlash: true
+    })
+  );
+
+  // Initializing server on chosen port
   app.listen(PORT, () => {
     console.log(`> Ready on port: ${PORT}`);
   });

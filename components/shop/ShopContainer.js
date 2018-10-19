@@ -8,17 +8,14 @@ class ShopContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      shopItems: [],
-      newItem: {
-        name: "",
-        price: 0
-      }
+      name: "",
+      price: 0
     };
   }
 
   handleSubmit = e => {
     e.preventDefault();
-    const item = { ...this.state.newItem };
+    const item = { ...this.state };
     axios.post("http://localhost:5000/api/shop", item).then(res => {
       if (res.data.success) {
         window.alert(`Successfully added: ${item.name} for ${item.price}`);
@@ -41,10 +38,7 @@ class ShopContainer extends Component {
   };
 
   handleChange = e => {
-    let newItem = { ...this.state.newItem };
-    const { name, value } = e.target;
-    newItem[name] = value;
-    this.setState({ newItem });
+    this.setState({ [e.target.name]: e.target.value });
   };
 
   mapShopItems = () => {
@@ -64,7 +58,7 @@ class ShopContainer extends Component {
     return (
       <Container>
         {this.props.form && (
-          <Segment textAlign="right">
+          <Segment>
             <Form onSubmit={this.handleSubmit}>
               <Form.Field>
                 <label>
@@ -73,7 +67,7 @@ class ShopContainer extends Component {
                     type="text"
                     name="name"
                     placeholder="Item Name... "
-                    value={this.state.newItem.name}
+                    value={this.state.name}
                     onChange={this.handleChange}
                     required
                   />
@@ -86,7 +80,7 @@ class ShopContainer extends Component {
                     type="number"
                     name="price"
                     placeholder="Item Price... "
-                    value={this.state.newItem.price}
+                    value={this.state.price}
                     onChange={this.handleChange}
                     required
                   />
