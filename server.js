@@ -24,9 +24,7 @@ server.prepare().then(() => {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
   // app.use(cookieParser());
-  app.use(
-    session({ secret: "doggos", resave: false, saveUninitialized: false })
-  );
+  app.use(session({ secret: "doggos", resave: true, saveUninitialized: true }));
   app.use(flash());
   //app.use(csurf());
   app.use(passport.initialize());
@@ -62,20 +60,41 @@ server.prepare().then(() => {
   app.post(
     "/login",
     passport.authenticate("local-login", {
-      successRedirect: "/",
       failureRedirect: "/login",
+      successRedirect: `/users/${req.user.username}`,
       failureFlash: true
-    })
+    }),
+    (req, res) => {
+      console.log(req.flash("error"));
+      server.render(req, res, "/users/" + req.user.username);
+    }
   );
 
   app.post(
     "/register",
     passport.authenticate("local-signup", {
-      successRedirect: "/",
       failureRedirect: "/signup",
       failureFlash: true
-    })
+    }),
+    (req, res) => {
+      req.login(req.user, function(err) {
+        if (err) {
+          return next(err);
+        }
+        return res.redirect("/users/" + req.user.username);
+      });
+    }
   );
+
+  app.get("/users/:id ", (req, res) => {
+    server.render(req, res, `users?name=${req.params.id}`);
+  });
+
+  // Auth methods
+  function requireLogin(req, res, next) {
+    if (!req.user) return res.redirect("/");
+    next();
+  }
 
   // Initializing server on chosen port
   app.listen(PORT, () => {

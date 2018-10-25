@@ -5,9 +5,9 @@ import { connect } from "react-redux";
 export default class extends Component {
   render() {
     return (
-      <Layout>
+      <>
         <Header as="h1">Hello, this is the about page.</Header>
-      </Layout>
+      </>
     );
   }
 }
