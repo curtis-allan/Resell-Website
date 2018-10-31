@@ -2,29 +2,32 @@ import { Header } from "semantic-ui-react";
 import React, { Component } from "react";
 import ShopContainer from "../components/shop/ShopContainer";
 //import { connect } from "react-redux";
-import axios from "axios";
+import NextAuth from "next-auth";
 
 class Index extends Component {
-  static async getInitialProps() {
-    let pageProps = {};
-    const res = await axios.get("http://localhost:5000/api/shop");
-    if (res && res.data) {
-      pageProps.items = res.data.items;
-      return { pageProps };
-    } else {
-      console.log("NO RESPONSE FROM API");
-      return {};
-    }
+  static async getInitialProps({ req }) {
+    return {
+      session: await NextAuth.init({ req })
+    };
   }
 
   render() {
-    return (
-      <>
-        <Header as="h1">Hello, this is the main application.</Header>
-        <ShopContainer items={this.props.items} />
-      </>
-    );
+    if (this.props.session.user) {
+      return (
+        <div>
+          <p>
+            You are logged in as{" "}
+            {this.props.session.user.name || this.props.session.user.email}
+          </p>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <p>You are not logged in.</p>
+        </div>
+      );
+    }
   }
 }
-
 export default Index;
